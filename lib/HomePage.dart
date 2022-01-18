@@ -1,0 +1,66 @@
+import 'package:ai_music_app/AiRadio.dart';
+import 'package:ai_music_app/Home.dart';
+import 'package:ai_music_app/MusicGames.dart';
+import 'package:ai_music_app/profile.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
+import 'package:ai_music_app/Start.dart';
+
+class HomePage extends StatefulWidget {
+  // const HomePage({ Key? key }) : super(key: key);
+
+  @override
+  _HomePageState createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+  final List<Widget> _children = [
+    Home(),
+    AiRadio(),
+    MusicGames(),
+    Profile(),
+  ];
+
+  void onTappedBar(int index) {
+    setState(() {
+      _currentIndex = index;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      backgroundColor: Colors.grey,
+      body: _children[_currentIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _currentIndex,
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            title: Text('Home'),
+            backgroundColor: Colors.black.withOpacity(0.7),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.radio_rounded),
+            title: Text('Radio'),
+            backgroundColor: Colors.black.withOpacity(0.7),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.games_rounded),
+            title: Text('Games'),
+            backgroundColor: Colors.black.withOpacity(0.7),
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            title: Text('Profile'),
+            backgroundColor: Colors.black.withOpacity(0.7),
+          ),
+        ],
+        onTap: onTappedBar,
+      ),
+    );
+  }
+}

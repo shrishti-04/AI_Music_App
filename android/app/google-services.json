@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "474857435600",
+    "project_id": "aimusicapp-7e132",
+    "storage_bucket": "aimusicapp-7e132.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:474857435600:android:05c3e4b49940b7fa4509d5",
+        "android_client_info": {
+          "package_name": "com.example.ai_music_app"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "474857435600-jgf4fb0kjkf31ut9d5j6ccqu37saphc1.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD64f-fU4gOKNhCE7N5VlHoWtJJiH7mLIw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "474857435600-jgf4fb0kjkf31ut9d5j6ccqu37saphc1.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
