@@ -1,8 +1,9 @@
 import 'dart:async';
 
-import 'package:ai_music_app/HomePage.dart';
+import 'package:ai_music_app/NavigationBar.dart';
 import 'package:ai_music_app/screens/Login.dart';
 import 'package:ai_music_app/screens/Register.dart';
+import 'package:ai_music_app/tabs/Home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -41,7 +42,7 @@ class _SplashScreenState extends State<SplashScreen> {
         print('fuid');
         Navigator.of(context).pop();
         Navigator.push(
-            context, MaterialPageRoute(builder: (context) => HomePage()));
+            context, MaterialPageRoute(builder: (context) => Home()));
       } else {
         Navigator.of(context).pop();
         Navigator.push(

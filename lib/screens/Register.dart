@@ -1,5 +1,6 @@
-import 'package:ai_music_app/HomePage.dart';
+import 'package:ai_music_app/NavigationBar.dart';
 import 'package:ai_music_app/screens/Login.dart';
+import 'package:ai_music_app/tabs/Home.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
@@ -214,7 +215,7 @@ class _RegisterState extends State<Register> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => HomePage(),
+                      builder: (context) => Home(),
                     ),
                   );
                 }).catchError((e) {

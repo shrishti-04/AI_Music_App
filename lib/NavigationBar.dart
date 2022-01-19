@@ -8,14 +8,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:ai_music_app/screens/Start.dart';
 
-class HomePage extends StatefulWidget {
-  // const HomePage({ Key? key }) : super(key: key);
+class NavigationBar extends StatefulWidget {
+  // const NavigationBar({ Key? key }) : super(key: key);
 
   @override
-  _HomePageState createState() => _HomePageState();
+  _NavigationBarState createState() => _NavigationBarState();
 }
 
-class _HomePageState extends State<HomePage> {
+class _NavigationBarState extends State<NavigationBar> {
   int _currentIndex = 0;
   final List<Widget> _children = [
     Home(),

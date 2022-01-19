@@ -2,7 +2,7 @@ import 'package:ai_music_app/screens/Register.dart';
 import 'package:ai_music_app/screens/Splash.dart';
 import 'package:ai_music_app/screens/Start.dart';
 import 'package:ai_music_app/screens/Login.dart';
-import 'package:ai_music_app/HomePage.dart';
+import 'package:ai_music_app/NavigationBar.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
 
