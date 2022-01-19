@@ -1,41 +1,81 @@
 import 'package:ai_music_app/HomePage.dart';
-import 'package:ai_music_app/Login.dart';
+import 'package:ai_music_app/screens/Register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ai_music_app/Start.dart';
+import 'package:firebase_core/firebase_core.dart';
+// import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+// import 'package:flutter_signin_button/flutter_signin_button.dart';
 
-class Register extends StatefulWidget {
-  // const Register({ Key? key }) : super(key: key);
+class Login extends StatefulWidget {
+  //  const Login({ Key? key }) : super(key: key);
 
   @override
-  _RegisterState createState() => _RegisterState();
+  _LoginState createState() => _LoginState();
 }
 
-class _RegisterState extends State<Register> {
+class _LoginState extends State<Login> {
   final FirebaseAuth _auth = FirebaseAuth.instance;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  // final firstNameEditingController = new TextEditingController();
-  // final lastNameEditingController = new TextEditingController();
-  // final emailEditingController = new TextEditingController();
-  // final passwordEditingController = new TextEditingController();
-  // final confirmPasswordEditingController = new TextEditingController();
-
   bool _passwordVisible;
-
   TextEditingController emailCont = new TextEditingController();
   TextEditingController passCont = new TextEditingController();
-  TextEditingController nameCont = new TextEditingController();
 
-  bool isObsecure = true;
-  // File _image;
-  bool isloading = false;
-  bool userValid = false;
+  String _email, _password;
+
+  // String? errorMessage;
+
+  // checkAuthentification() async {
+  //   _auth.onAuthStateChanged.listen((user) {
+  //     if (user != null) {
+  //       Navigator.push(
+  //           context, MaterialPageRoute(builder: (context) => HomePage()));
+  //     }
+  //   });
+
+  //   @override
+  //   void initState() {
+  //     super.initState();
+  //     this.checkAuthentification();
+  //   }
+  // }
+
+  // login() async {
+  //   if (_formKey.currentState.validate()) {
+  //     _formKey.currentState.save();
+
+  //     try {
+  //       UserCredential user = await _auth.signInWithEmailAndPassword(
+  //           email: _email, password: _password);
+  //     } catch (e) {
+  //       showError(e.errorMessage);
+  //     }
+  //   }
+  // }
+
+  // showError(String errorMessage) {
+  //   showDialog(
+  //       context: context,
+  //       builder: (BuildContext context) {
+  //         return AlertDialog(
+  //           title: Text("ERROR"),
+  //           content: Text(errorMessage),
+  //           actions: <Widget>[
+  //             FlatButton(
+  //               onPressed: () {
+  //                 Navigator.of(context).pop();
+  //               },
+  //               child: Text("OK"),
+  //             )
+  //           ],
+  //         );
+  //       });
+  // }
 
   @override
   void initState() {
@@ -44,43 +84,21 @@ class _RegisterState extends State<Register> {
   }
 
   Widget build(BuildContext context) {
-    final firstName = TextFormField(
-      autofocus: false,
-      controller: nameCont,
-      keyboardType: TextInputType.name,
-      // validator: (){};
-      // onSaved: (value) {
-      //   nameCont.text = value;
-      // },
-      textInputAction: TextInputAction.next,
-      decoration: InputDecoration(
-        hintStyle: TextStyle(
-          fontSize: 17,
-          color: Colors.white,
-        ),
-        labelText: 'Name',
-        labelStyle: TextStyle(
-          fontSize: 17,
-          color: Colors.white,
-        ),
-        prefixIcon: Icon(Icons.person, color: Colors.white),
-      ),
-      style: TextStyle(
-        fontSize: 17,
-        color: Colors.white,
-      ),
-    );
-
     final _email = TextFormField(
       autofocus: false,
       controller: emailCont,
       keyboardType: TextInputType.emailAddress,
       // validator: (){};
       // onSaved: (value) {
-      //   emailCont.text = value;
+      //   emailController.text = value;
       // },
+
       textInputAction: TextInputAction.next,
+
       decoration: InputDecoration(
+        fillColor: Color(0xffffff),
+        focusColor: Color(0xffffff),
+        hoverColor: Color(0xffffff),
         hintStyle: TextStyle(
           fontSize: 17,
           color: Colors.white,
@@ -92,6 +110,7 @@ class _RegisterState extends State<Register> {
         ),
         prefixIcon: Icon(Icons.email_rounded, color: Colors.white),
       ),
+
       style: TextStyle(
         fontSize: 17,
         color: Colors.white,
@@ -104,7 +123,7 @@ class _RegisterState extends State<Register> {
 
       // validator: (){};
       // onSaved: (value) {
-      //   passwordEditingController.text = value;
+      //   passwordController.text = value;
       // },
       textInputAction: TextInputAction.done,
       decoration: InputDecoration(
@@ -117,7 +136,6 @@ class _RegisterState extends State<Register> {
                 _passwordVisible = !_passwordVisible;
               });
             }),
-        prefixIcon: Icon(Icons.vpn_key_rounded, color: Colors.white),
         hintStyle: TextStyle(
           fontSize: 17,
           color: Colors.white,
@@ -127,125 +145,56 @@ class _RegisterState extends State<Register> {
           fontSize: 17,
           color: Colors.white,
         ),
+        prefixIcon: Icon(Icons.vpn_key_rounded, color: Colors.white),
       ),
-
+      obscureText: true,
       style: TextStyle(
         fontSize: 17,
         color: Colors.white,
       ),
     );
 
-    final registerButton = Material(
+    final loginButton = Material(
       color: Color(0xFF80CED3),
       elevation: 5,
       child: MaterialButton(
         padding: EdgeInsets.only(left: 20, right: 20, top: 10, bottom: 10),
         onPressed: () async {
-          print("Registering Button Clicked");
+          if (emailCont.text != null && passCont.text != null) {
+            var collectionRef = FirebaseFirestore.instance.collection('users');
+            var docu =
+                await collectionRef.doc(emailCont.text.toLowerCase()).get();
+            // var users = await collectionRef.doc(emailCont.text).snapshots();
+            bool check = docu.exists;
+            var dc = docu.data();
+            if (check) {
+              if (dc['pass'] == passCont.text) {
+                SharedPreferences prefs = await SharedPreferences.getInstance();
+                prefs.setString('email', emailCont.text.toLowerCase());
+                prefs.setString('pass', passCont.text);
 
-          //check if email is valid
-          bool emailValid =
-              RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-                  .hasMatch(emailCont.text);
-          print(emailValid);
-
-          //check user exist
-          bool check = false;
-
-          var collectionRef = FirebaseFirestore.instance.collection('users');
-          var docu = await collectionRef.doc(emailCont.text).get();
-          // var users = await collectionRef.doc(emailCont.text).snapshots();
-          check = docu.exists;
-          if (check) {
-            Fluttertoast.showToast(
-                msg: "User Already Exist please Login",
-                toastLength: Toast.LENGTH_SHORT,
-                gravity: ToastGravity.SNACKBAR,
-                timeInSecForIosWeb: 2,
-                backgroundColor: Colors.black,
-                textColor: Colors.white,
-                fontSize: 16.0);
-          } else {
-            if (emailValid) {
-              if (nameCont.text != null &&
-                      nameCont.text != '' &&
-
-                      // usernameCont.text != '' &&
-                      emailCont.text != null &&
-                      // emailCont.text != '' &&
-                      passCont.text != null
-                  // &&
-                  // passCont.text != ''
-                  ) {
-                FirebaseFirestore.instance
-                    .collection('users')
-                    .doc(emailCont.text)
-                    .set({
-                  'email': emailCont.text.toLowerCase(),
-                  'name': nameCont.text,
-                  'pass': passCont.text,
-                  'photo':
-                      'https://www.cybersport.ru/assets/img/no-photo/user.png',
-
-                  // 'phone': phoneCont.text == null
-                  //     ? 'Enter Phone Number'
-                  //     : phoneCont.text,
-                  // // 'birthdate': 'Enter Birth Date',
-                  'extra': 0,
-                  'Privacy': 0,
-                  'extra1': 'abc',
-                  'val': 'value',
-                  // 'locality': locality,
-
-                  'searchname': nameCont.text.toLowerCase(),
-                  // 'lat': lat == null ? 34.0479 : lat,
-                  // 'lng': lng == null ? 100.6197 : lng,
-                  // 'address': Add == null || Add == '' ? 'Address' : Add
-                  // .substring(0, 50)
-                  // ,
-                }).then((value) async {
-                  SharedPreferences prefs =
-                      await SharedPreferences.getInstance();
-                  prefs.setString('email', emailCont.text.toLowerCase());
-                  prefs.setString('pass', passCont.text);
-                  // prefs.setString('name', nameCont.text);
-                  // prefs.setString('username', usernameCont.text);
-                  prefs.setBool('theme', true);
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => HomePage(),
-                    ),
-                  );
-                }).catchError((e) {
-                  Fluttertoast.showToast(
-                      msg:
-                          "Error Registering🙁! Please Try Again After Sometime",
-                      toastLength: Toast.LENGTH_SHORT,
-                      gravity: ToastGravity.SNACKBAR,
-                      timeInSecForIosWeb: 2,
-                      backgroundColor: Colors.black,
-                      textColor: Colors.white,
-                      fontSize: 16.0);
-                });
+                Navigator.pop(context);
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => HomePage(),
+                  ),
+                );
               } else {
-                print(nameCont.text);
-
-                print(emailCont.text);
-                print(passCont.text);
                 Fluttertoast.showToast(
-                    msg: "Please Enter All Field",
+                    msg: "Wrong Password",
                     toastLength: Toast.LENGTH_SHORT,
                     gravity: ToastGravity.SNACKBAR,
                     timeInSecForIosWeb: 2,
                     backgroundColor: Colors.black,
                     textColor: Colors.white,
                     fontSize: 16.0);
-                print('enter all fields');
+                print('wrong data');
               }
             } else {
+              //email dosent exist
               Fluttertoast.showToast(
-                  msg: "Enter valid Email Address",
+                  msg: "Invalid Fields",
                   toastLength: Toast.LENGTH_SHORT,
                   gravity: ToastGravity.SNACKBAR,
                   timeInSecForIosWeb: 2,
@@ -253,17 +202,25 @@ class _RegisterState extends State<Register> {
                   textColor: Colors.white,
                   fontSize: 16.0);
             }
+          } else {
+            Fluttertoast.showToast(
+                msg: "Enter All Fields",
+                toastLength: Toast.LENGTH_SHORT,
+                gravity: ToastGravity.SNACKBAR,
+                timeInSecForIosWeb: 2,
+                backgroundColor: Colors.black,
+                textColor: Colors.white,
+                fontSize: 16.0);
           }
         },
         child: Text(
-          "REGISTER",
+          "LOGIN",
           style: TextStyle(
             fontSize: 18,
             fontWeight: FontWeight.bold,
             color: Colors.white,
           ),
         ),
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
       ),
     );
 
@@ -274,10 +231,11 @@ class _RegisterState extends State<Register> {
         centerTitle: true,
         backgroundColor: Colors.transparent,
       ),
-      backgroundColor: Colors.grey,
+      backgroundColor: Colors.black,
       body: Center(
         child: SingleChildScrollView(
           child: Container(
+            height: 800,
             decoration: BoxDecoration(
               gradient: LinearGradient(
                 colors: [
@@ -307,7 +265,7 @@ class _RegisterState extends State<Register> {
                 ),
                 Container(
                   child: Text(
-                    "REGISTER",
+                    "LOGIN",
                     style: TextStyle(
                       color: Color(0xFF80CED3),
                       fontSize: 30,
@@ -321,21 +279,43 @@ class _RegisterState extends State<Register> {
                     key: _formKey,
                     child: Column(
                       children: <Widget>[
-                        firstName,
-                        SizedBox(height: 10),
                         _email,
+                        Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                          margin: EdgeInsets.only(left: 20, right: 10),
+                          // child: TextFormField(
+                          //     validator: (input) {
+                          //       if (input.isEmpty) return 'Enter EmailId';
+                          //     },
+                          //     onSaved: (input) => _email = input),
+                        ),
+                        SizedBox(width: 80),
                         SizedBox(height: 10),
                         _password,
+                        Container(
+                          padding: EdgeInsets.only(left: 20, right: 10),
+                          // child: TextFormField(
+                          //     validator: (input) {
+                          //       if (input.isEmpty) return 'Enter Password';
+                          //       if (input.length < 8)
+                          //         return '8 Characters needed';
+                          //     },
+                          //     onSaved: (input) => _password = input),
+                        ),
                         SizedBox(height: 50),
-                        registerButton,
-                        SizedBox(height: 30),
+                        loginButton,
+                        SizedBox(height: 20),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: <Widget>[
                             Text(
-                              "Already have an account? Please Sign In",
+                              "Haven't signed up? Please Sign Up ",
                               style: TextStyle(
-                                // textAlign: TextAlign.Center,
                                 color: Colors.white,
                                 fontSize: 15,
                               ),
@@ -345,10 +325,10 @@ class _RegisterState extends State<Register> {
                                 Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Login()));
+                                        builder: (context) => Register()));
                               },
                               child: Text(
-                                " Sign In",
+                                " Sign Up",
                                 style: TextStyle(
                                   color: Color(0xFF80CED3),
                                   fontWeight: FontWeight.bold,
@@ -358,7 +338,6 @@ class _RegisterState extends State<Register> {
                             )
                           ],
                         ),
-                        SizedBox(height: 40),
                       ],
                     ),
                   ),

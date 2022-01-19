@@ -29,19 +29,7 @@ class _ProfileState extends State<Profile> {
               ),
             ),
             child: Column(
-              children: <Widget>[
-                new Padding(
-                  padding: new EdgeInsets.all(180),
-                ),
-                Container(
-                  child: Text(
-                    'View Yourself',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                )
-              ],
+              children: <Widget>[],
             ),
           ),
         ),

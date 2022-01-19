@@ -1,8 +1,8 @@
 import 'dart:async';
 
 import 'package:ai_music_app/HomePage.dart';
-import 'package:ai_music_app/Login.dart';
-import 'package:ai_music_app/Register.dart';
+import 'package:ai_music_app/screens/Login.dart';
+import 'package:ai_music_app/screens/Register.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';

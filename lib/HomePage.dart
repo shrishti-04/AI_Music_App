@@ -1,12 +1,12 @@
-import 'package:ai_music_app/AiRadio.dart';
-import 'package:ai_music_app/Home.dart';
-import 'package:ai_music_app/MusicGames.dart';
-import 'package:ai_music_app/profile.dart';
+import 'package:ai_music_app/tabs/AiRadio.dart';
+import 'package:ai_music_app/tabs/Home.dart';
+import 'package:ai_music_app/tabs/MusicGames.dart';
+import 'package:ai_music_app/tabs/profile.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
-import 'package:ai_music_app/Start.dart';
+import 'package:ai_music_app/screens/Start.dart';
 
 class HomePage extends StatefulWidget {
   // const HomePage({ Key? key }) : super(key: key);
